@@ -133,7 +133,7 @@ export default function QRPreview({ config }) {
       {/* Info */}
       <div className="p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800">
         <p className="text-xs text-primary-900 dark:text-primary-100">
-          💡 <strong>Tip:</strong> Use a higher error correction level if you&apos;re adding a logo to ensure the QR code remains scannable.
+          💡 <strong>Tip:</strong> Use a higher error correction level if you're adding a logo to ensure the QR code remains scannable.
         </p>
       </div>
     </div>
