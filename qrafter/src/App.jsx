@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import Header from './components/Header';
+import CustomizationPanel from './components/CustomizationPanel';
+import QRPreview from './components/QRPreview';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [config, setConfig] = useState({
+    data: 'https://github.com/moin-ansari-o8/QRafter',
+    size: 512,
+    margin: 10,
+    dotsColor: '#000000',
+    backgroundColor: '#ffffff',
+    dotsType: 'rounded',
+    cornerSquareType: 'extra-rounded',
+    cornerDotType: 'dot',
+    errorCorrectionLevel: 'M',
+    logo: null,
+  });
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Panel - Customization */}
+          <div>
+            <CustomizationPanel config={config} setConfig={setConfig} />
+          </div>
+
+          {/* Right Panel - Preview */}
+          <div>
+            <QRPreview config={config} />
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="container mx-auto px-4 py-8 text-center">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Made with ❤️ using Vite + React | QRafter © 2025
         </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
+
