@@ -1,29 +1,33 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const useQRStore = create(
   persist(
     (set, get) => ({
       // QR Configuration
       config: {
-        data: 'https://github.com/moin-ansari-o8/QRafter',
+        data: "https://github.com/moin-ansari-o8/QRafter",
         size: 512,
         margin: 10,
-        dotsColor: '#000000',
-        backgroundColor: '#ffffff',
-        dotsType: 'rounded',
-        cornerSquareType: 'extra-rounded',
-        cornerDotType: 'dot',
-        errorCorrectionLevel: 'M',
+        dotsColor: "#000000",
+        backgroundColor: "#ffffff",
+        dotsType: "rounded",
+        cornerSquareType: "extra-rounded",
+        cornerDotType: "dot",
+        errorCorrectionLevel: "M",
         logo: null,
         // New features
         gradient: null,
         pattern: null,
         frame: null,
-        frameText: '',
+        frameText: "",
         animation: null,
         filter: null,
       },
+
+      // Active template tracking
+      activeTemplate: null,
+      activePreset: null,
 
       // History for undo/redo
       history: [],
@@ -44,7 +48,7 @@ const useQRStore = create(
         // Add to history
         const newHistory = history.slice(0, historyIndex + 1);
         newHistory.push(currentConfig);
-        
+
         if (newHistory.length > get().maxHistorySize) {
           newHistory.shift();
         }
@@ -58,6 +62,10 @@ const useQRStore = create(
 
       updateConfig: (key, value) => {
         get().setConfig({ [key]: value });
+      },
+
+      setActiveTemplate: (templateName) => {
+        set({ activeTemplate: templateName, activePreset: null }); // Clear active preset when template selected
       },
 
       undo: () => {
@@ -99,11 +107,16 @@ const useQRStore = create(
         const preset = get().presets.find((p) => p.id === id);
         if (preset) {
           get().setConfig(preset.config);
+          set({ activeTemplate: null, activePreset: id }); // Track active preset and clear template
         }
       },
 
       deletePreset: (id) => {
-        set({ presets: get().presets.filter((p) => p.id !== id) });
+        const { activePreset } = get();
+        set({
+          presets: get().presets.filter((p) => p.id !== id),
+          activePreset: activePreset === id ? null : activePreset, // Clear if deleting active preset
+        });
       },
 
       // Brand Kit Management
@@ -143,7 +156,7 @@ const useQRStore = create(
           thumbnail: qrData,
           createdAt: new Date().toISOString(),
         };
-        
+
         const updated = [newRecent, ...recentQRCodes].slice(0, 10);
         set({ recentQRCodes: updated });
       },
@@ -154,20 +167,20 @@ const useQRStore = create(
       reset: () => {
         set({
           config: {
-            data: 'https://github.com/moin-ansari-o8/QRafter',
+            data: "https://github.com/moin-ansari-o8/QRafter",
             size: 512,
             margin: 10,
-            dotsColor: '#000000',
-            backgroundColor: '#ffffff',
-            dotsType: 'rounded',
-            cornerSquareType: 'extra-rounded',
-            cornerDotType: 'dot',
-            errorCorrectionLevel: 'M',
+            dotsColor: "#000000",
+            backgroundColor: "#ffffff",
+            dotsType: "rounded",
+            cornerSquareType: "extra-rounded",
+            cornerDotType: "dot",
+            errorCorrectionLevel: "M",
             logo: null,
             gradient: null,
             pattern: null,
             frame: null,
-            frameText: '',
+            frameText: "",
             animation: null,
             filter: null,
           },
@@ -175,7 +188,7 @@ const useQRStore = create(
       },
     }),
     {
-      name: 'qrafter-storage',
+      name: "qrafter-storage",
       partialize: (state) => ({
         presets: state.presets,
         brandKits: state.brandKits,

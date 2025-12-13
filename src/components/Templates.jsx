@@ -1,26 +1,53 @@
-import { TEMPLATES } from '../constants/templates';
-import toast from 'react-hot-toast';
+import { TEMPLATES } from "../constants/templates";
+import toast from "react-hot-toast";
+import { Layers } from "lucide-react";
+import useQRStore from "../store/qrStore";
 
 export default function Templates({ onSelectTemplate }) {
+  const { activeTemplate, setActiveTemplate } = useQRStore();
+
   const handleSelect = (template) => {
     onSelectTemplate(template.config);
+    setActiveTemplate(template.name);
     toast.success(`${template.name} template applied!`);
   };
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-        Quick Start Templates
-      </h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+    <div className="space-y-5">
+      <div>
+        <h3 className="text-xl font-bold font-serif text-ink-900 dark:text-newsprint-100 mb-2 flex items-center gap-2">
+          <Layers className="w-6 h-6 text-sepia-600 dark:text-sepia-500" />
+          Quick Start Templates
+        </h3>
+        <p className="text-xs text-ink-600 dark:text-newsprint-300 tracking-wide uppercase font-medium">
+          Choose a pre-designed template
+        </p>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {Object.values(TEMPLATES).map((template) => (
           <button
             key={template.name}
             onClick={() => handleSelect(template)}
-            className="flex flex-col items-center gap-2 p-4 bg-white dark:bg-slate-800 border-2 border-gray-200 dark:border-slate-700 rounded-lg hover:border-primary-500 dark:hover:border-primary-500 transition-all"
+            className={`group flex flex-col items-center gap-3 p-5 rounded-md border-2 transition-all duration-200 ${
+              activeTemplate === template.name
+                ? "border-ink-900 bg-ink-900 dark:border-newsprint-100 dark:bg-newsprint-100 shadow-lg"
+                : "glass border-ink-200 dark:border-ink-700 hover:border-sepia-600 dark:hover:border-sepia-500 hover:shadow-paper-lg active:shadow-inset"
+            }`}
           >
-            <span className="text-3xl">{template.icon}</span>
-            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            <span
+              className={`text-4xl transition-transform duration-200 group-hover:scale-110 ${
+                activeTemplate === template.name ? "scale-110" : ""
+              }`}
+            >
+              {template.icon}
+            </span>
+            <span
+              className={`text-sm font-semibold ${
+                activeTemplate === template.name
+                  ? "text-newsprint-100 dark:text-ink-900"
+                  : "text-ink-900 dark:text-newsprint-100"
+              }`}
+            >
               {template.name}
             </span>
           </button>

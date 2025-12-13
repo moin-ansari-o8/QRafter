@@ -1,22 +1,23 @@
-import { useState } from 'react';
-import { Save, Trash2, Download, Upload } from 'lucide-react';
-import toast from 'react-hot-toast';
-import useQRStore from '../store/qrStore';
+import { useState } from "react";
+import { Save, Trash2, Download, Upload } from "lucide-react";
+import toast from "react-hot-toast";
+import useQRStore from "../store/qrStore";
 
 export default function PresetsManager() {
-  const [presetName, setPresetName] = useState('');
+  const [presetName, setPresetName] = useState("");
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  
-  const { presets, savePreset, loadPreset, deletePreset } = useQRStore();
+
+  const { presets, savePreset, loadPreset, deletePreset, activePreset } =
+    useQRStore();
 
   const handleSave = () => {
     if (!presetName.trim()) {
-      toast.error('Please enter a preset name');
+      toast.error("Please enter a preset name");
       return;
     }
     savePreset(presetName);
     toast.success(`Preset "${presetName}" saved!`);
-    setPresetName('');
+    setPresetName("");
     setShowSaveDialog(false);
   };
 
@@ -32,14 +33,14 @@ export default function PresetsManager() {
 
   const handleExport = () => {
     const data = JSON.stringify(presets, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
+    const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'qrafter-presets.json';
+    a.download = "qrafter-presets.json";
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('Presets exported!');
+    toast.success("Presets exported!");
   };
 
   const handleImport = (e) => {
@@ -51,36 +52,45 @@ export default function PresetsManager() {
       try {
         JSON.parse(event.target.result);
         // Import presets - would need to add to store
-        toast.success('Presets imported!');
+        toast.success("Presets imported!");
       } catch {
-        toast.error('Invalid preset file');
+        toast.error("Invalid preset file");
       }
     };
     reader.readAsText(file);
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-          Saved Presets
-        </h3>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between border-b-2 border-ink-200 dark:border-ink-700 pb-3">
+        <div>
+          <h3 className="text-xl font-bold font-serif text-ink-900 dark:text-newsprint-100 mb-1 flex items-center gap-2">
+            <Save className="w-5 h-5 text-sepia-600 dark:text-sepia-500" />
+            Saved Presets
+          </h3>
+          <p className="text-xs text-ink-600 dark:text-newsprint-300 tracking-wide uppercase font-medium">
+            Manage your favorite styles
+          </p>
+        </div>
         <div className="flex gap-2">
           <button
             onClick={() => setShowSaveDialog(!showSaveDialog)}
-            className="p-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+            className="p-2.5 bg-ink-900 text-newsprint-100 dark:bg-newsprint-100 dark:text-ink-900 rounded-md border-2 border-ink-900 dark:border-newsprint-100 hover:bg-ink-800 dark:hover:bg-newsprint-200 transition-all shadow-editorial hover:shadow-paper-lg"
             title="Save Current Style"
           >
             <Save className="w-4 h-4" />
           </button>
           <button
             onClick={handleExport}
-            className="p-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+            className="p-2.5 glass text-ink-900 dark:text-newsprint-100 rounded-md border-2 border-ink-300 dark:border-ink-600 hover:border-sepia-600 transition-all shadow-paper hover:shadow-paper-lg"
             title="Export Presets"
           >
             <Download className="w-4 h-4" />
           </button>
-          <label className="p-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors cursor-pointer" title="Import Presets">
+          <label
+            className="p-2.5 glass text-ink-900 dark:text-newsprint-100 rounded-md border-2 border-ink-300 dark:border-ink-600 hover:border-sepia-600 transition-all shadow-paper hover:shadow-paper-lg cursor-pointer"
+            title="Import Presets"
+          >
             <Upload className="w-4 h-4" />
             <input
               type="file"
@@ -93,51 +103,74 @@ export default function PresetsManager() {
       </div>
 
       {showSaveDialog && (
-        <div className="overflow-hidden">
-          <div className="flex gap-2 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg">
+        <div className="animate-slide-up">
+          <div className="flex gap-2 p-4 bg-sepia-50 dark:bg-sepia-900/20 rounded-md border-2 border-sepia-300 dark:border-sepia-700">
             <input
               type="text"
               value={presetName}
               onChange={(e) => setPresetName(e.target.value)}
-              placeholder="Preset name..."
-              className="flex-1 px-3 py-2 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-              onKeyPress={(e) => e.key === 'Enter' && handleSave()}
+              placeholder="Enter preset name..."
+              className="input-field"
+              onKeyPress={(e) => e.key === "Enter" && handleSave()}
+              autoFocus
             />
-            <button
-              onClick={handleSave}
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-            >
+            <button onClick={handleSave} className="btn-primary">
               Save
             </button>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
+      <div className="grid grid-cols-1 gap-3 max-h-72 overflow-y-auto custom-scrollbar">
         {presets.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-            No saved presets yet
-          </p>
+          <div className="text-center py-8">
+            <p className="text-sm text-ink-600 dark:text-ink-400 mb-2 font-serif">
+              No saved presets yet
+            </p>
+            <p className="text-xs text-ink-500 dark:text-ink-500">
+              Click the save button to create your first preset
+            </p>
+          </div>
         ) : (
           presets.map((preset) => (
             <div
               key={preset.id}
-              className="flex items-center justify-between p-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg hover:border-primary-500 dark:hover:border-primary-500 transition-all"
+              className={`group flex items-center justify-between p-4 rounded-md border-2 transition-all ${
+                activePreset === preset.id
+                  ? "border-ink-900 bg-ink-900 dark:border-newsprint-100 dark:bg-newsprint-100 shadow-lg"
+                  : "glass border-ink-200 dark:border-ink-700 hover:border-sepia-600 dark:hover:border-sepia-500 hover:shadow-paper-lg"
+              }`}
             >
               <button
                 onClick={() => handleLoad(preset)}
                 className="flex-1 text-left"
               >
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                <span
+                  className={`text-sm font-semibold transition-colors ${
+                    activePreset === preset.id
+                      ? "text-newsprint-100 dark:text-ink-900"
+                      : "text-ink-900 dark:text-newsprint-100 group-hover:text-sepia-700 dark:group-hover:text-sepia-500"
+                  }`}
+                >
                   {preset.name}
                 </span>
-                <span className="block text-xs text-gray-500 dark:text-gray-400">
+                <span
+                  className={`block text-xs mt-1 font-mono ${
+                    activePreset === preset.id
+                      ? "text-newsprint-200 dark:text-ink-700"
+                      : "text-ink-500 dark:text-ink-500"
+                  }`}
+                >
                   {new Date(preset.createdAt).toLocaleDateString()}
                 </span>
               </button>
               <button
                 onClick={() => handleDelete(preset)}
-                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                className={`p-2 rounded-md transition-all ${
+                  activePreset === preset.id
+                    ? "text-newsprint-100 hover:bg-newsprint-100/10 dark:text-ink-900 dark:hover:bg-ink-900/10"
+                    : "text-archive-700 hover:bg-archive-50 dark:hover:bg-archive-900/20"
+                }`}
               >
                 <Trash2 className="w-4 h-4" />
               </button>

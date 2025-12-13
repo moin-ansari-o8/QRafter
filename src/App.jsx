@@ -1,15 +1,15 @@
-import { Undo2, Redo2 } from 'lucide-react';
-import Header from './components/Header';
-import CustomizationPanel from './components/CustomizationPanel';
-import QRPreview from './components/QRPreview';
-import Templates from './components/Templates';
-import PresetsManager from './components/PresetsManager';
-import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
-import ToastProvider from './components/ToastProvider';
-import useQRStore from './store/qrStore';
-import { useKeyboardShortcuts } from './utils/keyboard';
-import toast from 'react-hot-toast';
-import { useState } from 'react';
+import { Undo2, Redo2 } from "lucide-react";
+import Header from "./components/Header";
+import CustomizationPanel from "./components/CustomizationPanel";
+import QRPreview from "./components/QRPreview";
+import Templates from "./components/Templates";
+import PresetsManager from "./components/PresetsManager";
+import KeyboardShortcutsHelp from "./components/KeyboardShortcutsHelp";
+import ToastProvider from "./components/ToastProvider";
+import useQRStore from "./store/qrStore";
+import { useKeyboardShortcuts } from "./utils/keyboard";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 function App() {
   const { config, setConfig, undo, redo, canUndo, canRedo } = useQRStore();
@@ -17,24 +17,24 @@ function App() {
 
   const handleDownload = () => {
     // Triggered by keyboard shortcut
-    toast.info('Use the download buttons in the preview panel');
+    toast.info("Use the download buttons in the preview panel");
   };
 
   const handleSave = () => {
-    toast.info('Click the Save button in the Presets section');
+    toast.info("Click the Save button in the Presets section");
   };
 
   const handleUndo = () => {
     if (canUndo()) {
       undo();
-      toast.success('Undone');
+      toast.success("Undone");
     }
   };
 
   const handleRedo = () => {
     if (canRedo()) {
       redo();
-      toast.success('Redone');
+      toast.success("Redone");
     }
   };
 
@@ -47,16 +47,16 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-newsprint-100 dark:bg-ink-900">
       <Header />
-      
-      <main className="container mx-auto px-4 py-8">
+
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Undo/Redo Toolbar */}
-        <div className="flex items-center justify-end gap-2 mb-4">
+        <div className="flex items-center justify-end gap-3 mb-6 animate-fade-in">
           <button
             onClick={handleUndo}
             disabled={!canUndo()}
-            className="p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2.5 glass text-ink-900 dark:text-newsprint-100 rounded-md border-2 border-ink-200 dark:border-ink-600 hover:border-sepia-600 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed shadow-paper hover:shadow-paper-lg group"
             title="Undo (Ctrl/Cmd+Z)"
           >
             <Undo2 className="w-5 h-5" />
@@ -64,7 +64,7 @@ function App() {
           <button
             onClick={handleRedo}
             disabled={!canRedo()}
-            className="p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2.5 glass text-ink-900 dark:text-newsprint-100 rounded-md border-2 border-ink-200 dark:border-ink-600 hover:border-sepia-600 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed shadow-paper hover:shadow-paper-lg group"
             title="Redo (Ctrl/Cmd+Y)"
           >
             <Redo2 className="w-5 h-5" />
@@ -73,30 +73,30 @@ function App() {
 
         {/* Templates Section */}
         {showTemplates && (
-          <div className="mb-8 p-6 glass rounded-2xl border border-gray-200 dark:border-slate-700">
+          <div className="mb-8 card animate-slide-up">
             <Templates onSelectTemplate={(template) => setConfig(template)} />
             <button
               onClick={() => setShowTemplates(false)}
-              className="mt-4 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              className="mt-6 text-sm text-ink-600 dark:text-ink-400 hover:text-sepia-700 dark:hover:text-sepia-500 font-semibold transition-colors tracking-wide uppercase text-xs"
             >
-              Hide templates
+              Hide templates ↑
             </button>
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
           {/* Left Panel - Customization */}
           <div className="space-y-6">
             <CustomizationPanel config={config} setConfig={setConfig} />
-            
+
             {/* Presets Manager */}
-            <div className="p-6 glass rounded-2xl border border-gray-200 dark:border-slate-700">
+            <div className="card">
               <PresetsManager />
             </div>
           </div>
 
           {/* Right Panel - Preview */}
-          <div>
+          <div className="lg:sticky lg:top-24 h-fit">
             <QRPreview config={config} />
           </div>
         </div>
@@ -104,7 +104,7 @@ function App() {
         {!showTemplates && (
           <button
             onClick={() => setShowTemplates(true)}
-            className="mt-4 text-sm text-primary-500 hover:text-primary-700"
+            className="mt-8 mx-auto block text-sm text-ink-600 dark:text-ink-400 hover:text-sepia-700 dark:hover:text-sepia-500 font-semibold transition-colors tracking-wide uppercase text-xs border-b-2 border-transparent hover:border-sepia-600"
           >
             Show templates
           </button>
@@ -112,9 +112,13 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="container mx-auto px-4 py-8 text-center">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Made with ❤️ using Vite + React | QRafter © 2025
+      <footer className="container mx-auto px-4 py-8 text-center border-t-2 border-ink-200 dark:border-ink-700 mt-12">
+        <p className="text-sm text-ink-600 dark:text-ink-400 font-serif">
+          Crafted with care ·{" "}
+          <span className="font-bold text-ink-900 dark:text-newsprint-100">
+            QRafter
+          </span>{" "}
+          © 2025
         </p>
       </footer>
 
@@ -128,4 +132,3 @@ function App() {
 }
 
 export default App;
-

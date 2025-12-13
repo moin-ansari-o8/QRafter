@@ -1,32 +1,43 @@
-import { Upload } from 'lucide-react';
-import ColorPicker from './ColorPicker';
-import StyleSelector from './StyleSelector';
+import {
+  Upload,
+  FileText,
+  ImageIcon,
+  Palette,
+  Circle,
+  Square,
+  Grid3x3,
+  Shield,
+  Maximize2,
+  BoxSelect,
+} from "lucide-react";
+import ColorPicker from "./ColorPicker";
+import StyleSelector from "./StyleSelector";
 
 const DOT_STYLES = [
-  { value: 'square', label: 'Square' },
-  { value: 'dots', label: 'Dots' },
-  { value: 'rounded', label: 'Rounded' },
-  { value: 'extra-rounded', label: 'Extra Rounded' },
-  { value: 'classy', label: 'Classy' },
-  { value: 'classy-rounded', label: 'Classy Rounded' },
+  { value: "square", label: "Square" },
+  { value: "dots", label: "Dots" },
+  { value: "rounded", label: "Rounded" },
+  { value: "extra-rounded", label: "Extra Rounded" },
+  { value: "classy", label: "Classy" },
+  { value: "classy-rounded", label: "Classy Rounded" },
 ];
 
 const CORNER_SQUARE_STYLES = [
-  { value: 'square', label: 'Square' },
-  { value: 'dot', label: 'Dot' },
-  { value: 'extra-rounded', label: 'Extra Rounded' },
+  { value: "square", label: "Square" },
+  { value: "dot", label: "Dot" },
+  { value: "extra-rounded", label: "Extra Rounded" },
 ];
 
 const CORNER_DOT_STYLES = [
-  { value: 'square', label: 'Square' },
-  { value: 'dot', label: 'Dot' },
+  { value: "square", label: "Square" },
+  { value: "dot", label: "Dot" },
 ];
 
 const ERROR_CORRECTION_LEVELS = [
-  { value: 'L', label: 'Low' },
-  { value: 'M', label: 'Medium' },
-  { value: 'Q', label: 'Quartile' },
-  { value: 'H', label: 'High' },
+  { value: "L", label: "Low" },
+  { value: "M", label: "Medium" },
+  { value: "Q", label: "Quartile" },
+  { value: "H", label: "High" },
 ];
 
 export default function CustomizationPanel({ config, setConfig }) {
@@ -42,38 +53,44 @@ export default function CustomizationPanel({ config, setConfig }) {
   };
 
   return (
-    <div className="space-y-6 p-6 glass rounded-2xl border border-gray-200 dark:border-slate-700 max-h-[calc(100vh-12rem)] overflow-y-auto">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-          Customize Your QR Code
+    <div className="space-y-6 card max-h-[calc(100vh-12rem)] overflow-y-auto custom-scrollbar">
+      <div className="border-b-2 border-ink-200 dark:border-ink-700 pb-4">
+        <h2 className="text-2xl font-bold font-serif text-ink-900 dark:text-newsprint-100 mb-1 flex items-center gap-2">
+          <Palette className="w-6 h-6 text-sepia-600 dark:text-sepia-500" />
+          Customize
         </h2>
+        <p className="text-xs text-ink-600 dark:text-newsprint-300 tracking-wide uppercase font-medium">
+          Personalize every aspect
+        </p>
       </div>
 
       {/* Input Data */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-semibold text-ink-900 dark:text-newsprint-100">
+          <FileText className="w-4 h-4 text-sepia-600 dark:text-sepia-500" />
           Content
         </label>
         <textarea
           value={config.data}
           onChange={(e) => setConfig({ ...config, data: e.target.value })}
           placeholder="Enter URL, text, or any data..."
-          className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none resize-none"
+          className="input-field resize-none"
           rows="3"
         />
       </div>
 
       {/* Logo Upload */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-semibold text-ink-900 dark:text-newsprint-100">
+          <ImageIcon className="w-4 h-4 text-sepia-600 dark:text-sepia-500" />
           Logo (Optional)
         </label>
-        <div className="flex items-center gap-2">
-          <label className="flex-1 cursor-pointer">
-            <div className="flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-lg hover:border-primary-500 dark:hover:border-primary-500 transition-colors">
-              <Upload className="w-5 h-5" />
-              <span className="text-sm">
-                {config.logo ? 'Change Logo' : 'Upload Logo'}
+        <div className="flex items-center gap-3">
+          <label className="flex-1 cursor-pointer group">
+            <div className="flex items-center justify-center gap-2 px-4 py-3 glass border-2 border-dashed border-ink-300 dark:border-ink-600 rounded-md hover:border-sepia-600 dark:hover:border-sepia-500 transition-all duration-150">
+              <Upload className="w-5 h-5 text-ink-600 dark:text-newsprint-100 group-hover:text-sepia-700 dark:group-hover:text-sepia-400 transition-colors" />
+              <span className="text-sm font-semibold text-ink-700 dark:text-newsprint-100 group-hover:text-sepia-700 dark:group-hover:text-sepia-400">
+                {config.logo ? "Change Logo" : "Upload Logo"}
               </span>
             </div>
             <input
@@ -87,7 +104,7 @@ export default function CustomizationPanel({ config, setConfig }) {
             <button
               type="button"
               onClick={() => setConfig({ ...config, logo: null })}
-              className="px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              className="btn-danger"
             >
               Remove
             </button>
@@ -98,12 +115,14 @@ export default function CustomizationPanel({ config, setConfig }) {
       {/* Colors */}
       <ColorPicker
         label="Foreground Color"
+        icon={<Circle className="w-4 h-4" />}
         value={config.dotsColor}
         onChange={(color) => setConfig({ ...config, dotsColor: color })}
       />
 
       <ColorPicker
         label="Background Color"
+        icon={<Square className="w-4 h-4" />}
         value={config.backgroundColor}
         onChange={(color) => setConfig({ ...config, backgroundColor: color })}
       />
@@ -111,6 +130,7 @@ export default function CustomizationPanel({ config, setConfig }) {
       {/* Dot Style */}
       <StyleSelector
         label="Dot Style"
+        icon={<Grid3x3 className="w-4 h-4" />}
         value={config.dotsType}
         onChange={(type) => setConfig({ ...config, dotsType: type })}
         options={DOT_STYLES}
@@ -119,6 +139,7 @@ export default function CustomizationPanel({ config, setConfig }) {
       {/* Corner Square Style */}
       <StyleSelector
         label="Corner Square Style"
+        icon={<Square className="w-4 h-4" />}
         value={config.cornerSquareType}
         onChange={(type) => setConfig({ ...config, cornerSquareType: type })}
         options={CORNER_SQUARE_STYLES}
@@ -127,15 +148,20 @@ export default function CustomizationPanel({ config, setConfig }) {
       {/* Corner Dot Style */}
       <StyleSelector
         label="Corner Dot Style"
+        icon={<Circle className="w-4 h-4" />}
         value={config.cornerDotType}
         onChange={(type) => setConfig({ ...config, cornerDotType: type })}
         options={CORNER_DOT_STYLES}
       />
 
       {/* Size */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Size: {config.size}px
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-semibold text-ink-900 dark:text-newsprint-100">
+          <Maximize2 className="w-4 h-4 text-sepia-600 dark:text-sepia-500" />
+          Size:{" "}
+          <span className="text-sepia-700 dark:text-sepia-400 font-mono">
+            {config.size}px
+          </span>
         </label>
         <input
           type="range"
@@ -146,14 +172,18 @@ export default function CustomizationPanel({ config, setConfig }) {
           onChange={(e) =>
             setConfig({ ...config, size: parseInt(e.target.value) })
           }
-          className="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-600"
+          className="w-full h-2 bg-ink-200 dark:bg-ink-700 rounded appearance-none cursor-pointer accent-sepia-600"
         />
       </div>
 
       {/* Margin */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Margin: {config.margin}
+      <div className="space-y-3">
+        <label className="flex items-center gap-2 text-sm font-semibold text-ink-900 dark:text-newsprint-100">
+          <BoxSelect className="w-4 h-4 text-sepia-600 dark:text-sepia-500" />
+          Margin:{" "}
+          <span className="text-sepia-700 dark:text-sepia-400 font-mono">
+            {config.margin}px
+          </span>
         </label>
         <input
           type="range"
@@ -164,13 +194,14 @@ export default function CustomizationPanel({ config, setConfig }) {
           onChange={(e) =>
             setConfig({ ...config, margin: parseInt(e.target.value) })
           }
-          className="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-600"
+          className="w-full h-2 bg-ink-200 dark:bg-ink-700 rounded appearance-none cursor-pointer accent-sepia-600"
         />
       </div>
 
       {/* Error Correction */}
       <StyleSelector
         label="Error Correction Level"
+        icon={<Shield className="w-4 h-4" />}
         value={config.errorCorrectionLevel}
         onChange={(level) =>
           setConfig({ ...config, errorCorrectionLevel: level })

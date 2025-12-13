@@ -1,21 +1,29 @@
-import { QrCode } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
+import { QrCode, Newspaper } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   return (
-    <header className="glass border-b border-gray-200 dark:border-slate-700 sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
+    <header className="glass sticky top-0 z-50 border-b-2 border-ink-200 dark:border-ink-700">
+      <div className="container mx-auto px-4 py-4 max-w-7xl">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center shadow-lg">
-              <QrCode className="w-6 h-6 text-white" />
+          <div className="flex items-center gap-4">
+            <div className="relative group">
+              <div className="w-12 h-12 bg-ink-900 dark:bg-newsprint-100 rounded border-2 border-ink-900 dark:border-newsprint-100 flex items-center justify-center shadow-editorial transition-all hover:shadow-paper-lg">
+                <QrCode
+                  className="w-7 h-7 text-newsprint-100 dark:text-ink-900"
+                  strokeWidth={2.5}
+                />
+              </div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent">
-                QRafter
-              </h1>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
-                Craft Beautiful QR Codes in Seconds
+              <div className="flex items-center gap-2">
+                <h1 className="text-3xl font-bold font-serif text-ink-900 dark:text-newsprint-100 tracking-tight">
+                  QRafter
+                </h1>
+                <Newspaper className="w-5 h-5 text-sepia-600 dark:text-sepia-500" />
+              </div>
+              <p className="text-xs text-ink-600 dark:text-ink-400 font-medium tracking-wide uppercase">
+                Editorial QR Code Generator
               </p>
             </div>
           </div>
