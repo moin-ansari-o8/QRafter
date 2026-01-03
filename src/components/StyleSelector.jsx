@@ -8,25 +8,25 @@ export default function StyleSelector({
   options,
 }) {
   const [isDark, setIsDark] = useState(false);
-  
+
   // Track theme changes
   useEffect(() => {
     const checkTheme = () => {
-      setIsDark(document.documentElement.classList.contains('dark'));
+      setIsDark(document.documentElement.classList.contains("dark"));
     };
-    
+
     checkTheme();
-    
+
     // Watch for theme changes
     const observer = new MutationObserver(checkTheme);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ["class"],
     });
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   return (
     <div className="space-y-3">
       <label className="flex items-center gap-2 text-sm font-semibold text-ink-900 dark:text-newsprint-100">
@@ -38,7 +38,7 @@ export default function StyleSelector({
       <div className="grid grid-cols-2 gap-3">
         {options.map((option) => {
           const isActive = value === option.value;
-          
+
           // Active button styles
           if (isActive) {
             return (
@@ -62,7 +62,7 @@ export default function StyleSelector({
               </button>
             );
           }
-          
+
           // Inactive button styles
           return (
             <button
@@ -84,7 +84,9 @@ export default function StyleSelector({
                 e.currentTarget.style.borderColor = "#8b7355";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = isDark ? "#525252" : "#d4d4d4";
+                e.currentTarget.style.borderColor = isDark
+                  ? "#525252"
+                  : "#d4d4d4";
               }}
             >
               {option.label}
