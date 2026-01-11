@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Download, Image, FileCode, Lightbulb } from "lucide-react";
+import { Download, Image, FileCode } from "lucide-react";
 import QRCodeStyling from "qr-code-styling";
 import confetti from "canvas-confetti";
 import toast from "react-hot-toast";
 
-export default function QRPreview({ config }) {
+export default function QRPreview({ config, isMobile = false }) {
   const qrRef = useRef(null);
   const qrCodeRef = useRef(null);
+  const qrContainerRef = useRef(null);
   const [, setIsGenerating] = useState(false);
 
   useEffect(() => {
@@ -89,6 +90,32 @@ export default function QRPreview({ config }) {
     }
   }, [config]);
 
+
+
+  // Listen for download events from FloatingDownloadButton
+  useEffect(() => {
+    const handleDownloadEvent = (e) => {
+      if (qrCodeRef.current) {
+        try {
+          qrCodeRef.current.download({
+            name: e.detail.filename,
+            extension: e.detail.extension,
+          });
+          toast.success(
+            `QR Code downloaded as ${e.detail.extension.toUpperCase()}!`
+          );
+          celebrateDownload();
+        } catch (error) {
+          toast.error("Download failed. Please try again.");
+          console.error("Download error:", error);
+        }
+      }
+    };
+
+    window.addEventListener("downloadQR", handleDownloadEvent);
+    return () => window.removeEventListener("downloadQR", handleDownloadEvent);
+  }, []);
+
   const celebrateDownload = () => {
     confetti({
       particleCount: 100,
@@ -125,53 +152,35 @@ export default function QRPreview({ config }) {
   ];
 
   return (
-    <div className="space-y-6 card">
-      <div className="border-b-2 border-ink-200 dark:border-ink-700 pb-4">
-        <h2 className="text-2xl font-bold font-serif text-ink-900 dark:text-newsprint-100 mb-1 flex items-center gap-2">
-          <Download className="w-6 h-6 text-sepia-600 dark:text-sepia-500" />
-          Preview
-        </h2>
-        <p className="text-xs text-ink-600 dark:text-newsprint-300 tracking-wide uppercase font-medium">
-          Your QR code appears here
-        </p>
-      </div>
+    <div className={isMobile ? "" : "space-y-4 sm:space-y-6 card"}>
+      {/* Desktop only: Show Preview heading */}
+      {!isMobile && (
+        <div className="border-b-2 border-ink-200 dark:border-ink-700 pb-3 sm:pb-4">
+          <h2 className="text-xl sm:text-2xl font-bold font-serif text-ink-900 dark:text-newsprint-100 mb-1 flex items-center gap-2">
+            <Download className="w-5 h-5 sm:w-6 sm:h-6 text-sepia-600 dark:text-sepia-500" />
+            Preview
+          </h2>
+          <p className="text-xs text-ink-600 dark:text-newsprint-300 tracking-wide uppercase font-medium">
+            Your QR code appears here
+          </p>
+        </div>
+      )}
 
       {/* QR Code Display */}
-      <div className="relative">
-        <div className="flex items-center justify-center glass rounded-lg p-8 border-2 border-ink-300 dark:border-ink-600 shadow-paper-lg">
-          <div ref={qrRef} className="flex items-center justify-center" />
+      <div
+        ref={qrContainerRef}
+        className={`${isMobile ? "sticky top-16 z-40 mb-4" : ""}`}
+      >
+        <div className="flex items-center justify-center glass rounded-lg p-4 sm:p-8 border-2 border-ink-300 dark:border-ink-600 shadow-paper-lg overflow-hidden bg-newsprint-50 dark:bg-ink-800">
+          <div
+            ref={qrRef}
+            className="flex items-center justify-center w-full"
+            style={{
+              maxWidth: "100%",
+              maxHeight: isMobile ? "280px" : "100%",
+            }}
+          />
         </div>
-      </div>
-
-      {/* Download Buttons */}
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-ink-900 dark:text-newsprint-100 flex items-center gap-2">
-          <Download className="w-4 h-4 text-sepia-600 dark:text-sepia-500" />
-          Export Options
-        </h3>
-        <div className="grid grid-cols-2 gap-3">
-          {exportFormats.map(({ ext, label, icon: Icon }) => (
-            <button
-              key={ext}
-              onClick={() => handleDownload(ext)}
-              className="flex flex-col items-center gap-2 px-4 py-4 bg-ink-900 text-newsprint-100 dark:bg-newsprint-100 dark:text-ink-900 rounded-md border-2 border-ink-900 dark:border-newsprint-100 hover:bg-ink-800 dark:hover:bg-newsprint-200 transition-all shadow-editorial hover:shadow-paper-lg font-semibold"
-            >
-              <Icon className="w-6 h-6" />
-              <span className="text-sm">{label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Info */}
-      <div className="rounded-md bg-sepia-50 dark:bg-sepia-900/20 border-l-4 border-sepia-600 p-4">
-        <p className="text-sm text-ink-800 dark:text-ink-200 leading-relaxed flex items-start gap-2">
-          <Lightbulb className="w-5 h-5 text-sepia-700 dark:text-sepia-500 shrink-0 mt-0.5" />
-          <span>
-            <strong className="font-serif">Pro Tip:</strong> Use a higher error
-            correction level when adding a logo to ensure scannability.
-          </span>
-        </p>
       </div>
     </div>
   );

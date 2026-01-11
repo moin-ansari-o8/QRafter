@@ -4,6 +4,163 @@
 
 ---
 
+## 2026-01-11 - Radio Button Visibility Issue in StyleSelector
+
+**Problem:**
+- Unselected buttons in StyleSelector (especially Error Correction Level with 4 options) were not properly visible
+- Low contrast between unselected buttons and card background
+- Buttons appeared "flat" without depth or clear boundaries
+- Light mode: Off-white buttons on white card background blended together
+- Dark mode: Dark gray buttons on dark background hard to distinguish
+
+**Root Cause:**
+- Inactive buttons used colors too close to card background:
+  - Light mode: `#fafaf9` button on `#ffffff` card (minimal contrast)
+  - Dark mode: `#2d2d2d` button on `#2d2d2d` card (same color!)
+- Border colors too subtle: `#d4d4d4` (light) and `#525252` (dark)
+- No shadows to create depth and separation
+- No hover feedback animations
+
+**Solution:**
+- **Increased contrast for unselected buttons:**
+  - Light mode: Pure white `#ffffff` background with darker border `#a3a3a3`
+  - Dark mode: Kept `#2d2d2d` but with lighter border `#737373` for visibility
+- **Added shadows for depth:**
+  - Light: `0 1px 3px rgba(0, 0, 0, 0.08)` - subtle paper shadow
+  - Dark: `0 1px 3px rgba(0, 0, 0, 0.3)` - stronger shadow for contrast
+- **Enhanced hover states:**
+  - Border changes to sepia `#8b7355`
+  - Button lifts up with `translateY(-1px)`
+  - Shadow increases: `0 4px 8px` for clear hover feedback
+- **Improved active button:**
+  - Stronger scale effect: `scale(1.02)` for clear selection
+  - Larger shadow: `0 4px 12px rgba(0,0,0,0.25)`
+  - Theme-appropriate colors maintained
+
+**Technical Details:**
+```jsx
+// ❌ BEFORE (Poor visibility):
+backgroundColor: isDark ? "#2d2d2d" : "#fafaf9",  // Too similar to background
+border: isDark ? "2px solid #525252" : "2px solid #d4d4d4",  // Weak borders
+// No shadows = flat appearance
+
+// ✅ AFTER (Clear visibility):
+backgroundColor: isDark ? "#2d2d2d" : "#ffffff",  // White stands out in light mode
+border: isDark ? "2px solid #737373" : "2px solid #a3a3a3",  // Stronger borders
+boxShadow: isDark 
+  ? "0 1px 3px rgba(0, 0, 0, 0.3)"    // Shadow for depth in dark mode
+  : "0 1px 3px rgba(0, 0, 0, 0.08)",  // Subtle shadow in light mode
+  
+// Enhanced hover:
+onMouseEnter={(e) => {
+  e.currentTarget.style.borderColor = "#8b7355";
+  e.currentTarget.style.transform = "translateY(-1px)";  // Lift effect
+  e.currentTarget.style.boxShadow = "0 4px 8px...";     // Deeper shadow
+}}
+```
+
+**Files Changed:**
+- [StyleSelector.jsx](../src/components/StyleSelector.jsx) - Improved button contrast and hover effects
+
+**Lesson:**
+- Always ensure sufficient contrast between interactive elements and their backgrounds
+- Use shadows to create depth and visual hierarchy
+- Test with 4+ option grids (2x2) not just 2-3 options
+- Light mode needs white or very light backgrounds for buttons on cards
+- Dark mode needs lighter borders (not darker) for visibility
+- Hover states should have clear visual feedback (lift, shadow, border color change)
+
+---
+
+## 2026-01-11 - Mobile Responsiveness and Tiny Scrollable Area Issue
+
+**Problem:**
+- CustomizationPanel had `max-h-[calc(100vh-12rem)] overflow-y-auto` creating tiny scrollable area on mobile
+- Layout broke on tablets and small screens
+- Touch targets too small for mobile (buttons under 44px)
+- No responsive spacing or breakpoints
+- Paper texture was basic, not professional enough
+
+**Root Cause:**
+- Fixed height constraint on CustomizationPanel forced content into tiny scrollable box
+- No mobile-first design approach with responsive breakpoints
+- Missing touch-friendly button sizing (iOS/Android guidelines require 44px minimum)
+- Lack of responsive spacing utilities (sm:, md:, lg: breakpoints)
+- Basic paper texture without paper grain effect
+
+**Solution:**
+- **Removed max-height constraint** from CustomizationPanel - let content flow naturally
+- Added comprehensive responsive utilities:
+  - `px-3 sm:px-4` for responsive padding
+  - `gap-2 sm:gap-3` for responsive spacing
+  - `text-xs sm:text-sm` for scalable typography
+  - `p-2 sm:p-2.5` for touch-friendly button padding
+- Enhanced paper texture with vintage newspaper grain:
+  - Added repeating linear gradients for paper fibers
+  - Layered with halftone printing dots
+  - Different textures for light/dark modes
+- Implemented minimum 44px touch targets on all interactive elements
+- Added `touch-manipulation` class for better mobile interactions
+- Made layout mobile-first with `order-1 lg:order-2` to show preview first on mobile
+- Responsive grid: 2 columns mobile, 3 columns tablet+
+- Added mobile-optimized scrollbars (6px width on mobile)
+- Added xs breakpoint (475px) in tailwind.config
+
+**Technical Details:**
+```jsx
+// ❌ BEFORE (Broken):
+<div className="space-y-6 card max-h-[calc(100vh-12rem)] overflow-y-auto custom-scrollbar">
+  {/* Tiny scrollable area on mobile! */}
+</div>
+
+// ✅ AFTER (Fixed):
+<div className="space-y-4 sm:space-y-6 card">
+  {/* Content flows naturally, no forced scrolling */}
+</div>
+```
+
+**CSS Improvements:**
+```css
+/* Enhanced paper texture */
+body {
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.015) 2px, rgba(0, 0, 0, 0.015) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.01) 2px, rgba(0, 0, 0, 0.01) 4px),
+    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.025) 1px, transparent 1px),
+    /* ... halftone dots ... */
+}
+
+/* Mobile touch targets */
+@media (max-width: 768px) {
+  .btn-primary, .btn-secondary, .btn-danger {
+    padding: 0.875rem 1.5rem;
+    min-height: 44px; /* iOS/Android guideline */
+  }
+}
+```
+
+**Files Changed:**
+- [index.css](../src/index.css) - Enhanced textures, mobile CSS utilities
+- [tailwind.config.js](../tailwind.config.js) - Added xs breakpoint, safe-area spacing
+- [App.jsx](../src/App.jsx) - Responsive layout, mobile-first grid
+- [CustomizationPanel.jsx](../src/components/CustomizationPanel.jsx) - Removed scrollable container
+- [QRPreview.jsx](../src/components/QRPreview.jsx) - Responsive sizing
+- [Header.jsx](../src/components/Header.jsx) - Mobile-optimized spacing
+- [Templates.jsx](../src/components/Templates.jsx) - Responsive grid
+- [PresetsManager.jsx](../src/components/PresetsManager.jsx) - Mobile-friendly controls
+- [ThemeToggle.jsx](../src/components/ThemeToggle.jsx) - Responsive icons
+- [StyleSelector.jsx](../src/components/StyleSelector.jsx) - 44px touch targets
+
+**Lesson:**
+- Never use fixed height constraints that create tiny scrollable areas
+- Always design mobile-first with progressive enhancement
+- Follow iOS/Android touch target guidelines (44px minimum)
+- Use responsive utilities (sm:, md:, lg:) for every spacing/sizing property
+- Professional paper textures need layered effects (grain + halftone)
+- Test on actual mobile devices or browser DevTools mobile emulation
+
+---
+
 ## 2026-01-04 - StyleSelector Buttons Invisible in Light Mode
 
 **Problem:**

@@ -10,25 +10,31 @@
 body {
   color: #1a1a1a;
   background-color: #f5f5f0;
-  /* Newspaper ink dot pattern - halftone printing effect */
+  /* Enhanced paper texture - vintage newspaper with grain */
   background-image: 
-    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    /* Subtle paper fibers */
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.015) 2px, rgba(0, 0, 0, 0.015) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.01) 2px, rgba(0, 0, 0, 0.01) 4px),
+    /* Halftone printing dots */
+    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.025) 1px, transparent 1px),
     radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
     radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.015) 0.5px, transparent 0.5px);
-  background-size: 4px 4px, 8px 8px, 6px 6px;
-  background-position: 0 0, 2px 2px, 1px 1px;
+  background-size: 100% 100%, 100% 100%, 4px 4px, 8px 8px, 6px 6px;
+  background-position: 0 0, 0 0, 0 0, 2px 2px, 1px 1px;
 }
 
 .dark body {
   color: #e5e5e5;
   background-color: #1a1a1a;
-  /* Darker newspaper ink dot pattern for dark mode */
+  /* Dark mode paper texture with subtle grain */
   background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.02) 2px, rgba(255, 255, 255, 0.02) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 4px),
     radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0.5px, transparent 0.5px);
-  background-size: 4px 4px, 8px 8px, 6px 6px;
-  background-position: 0 0, 2px 2px, 1px 1px;
+  background-size: 100% 100%, 100% 100%, 4px 4px, 8px 8px, 6px 6px;
+  background-position: 0 0, 0 0, 0 0, 2px 2px, 1px 1px;
 }
 
 @layer utilities {
@@ -293,5 +299,153 @@ body {
   
   .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: #b89264;
+  }
+  
+  /* Mobile-optimized card padding */
+  @media (max-width: 768px) {
+    .card {
+      padding: 1.25rem;
+    }
+  }
+  
+  /* Mobile-friendly touch targets */
+  @media (max-width: 768px) {
+    .btn-primary, .btn-secondary, .btn-danger {
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+      min-height: 44px; /* iOS recommended touch target */
+    }
+    
+    .input-field {
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      min-height: 44px;
+    }
+    
+    /* Better mobile scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+  }
+  
+  /* Smooth scrolling for mobile */
+  @media (max-width: 768px) {
+    .custom-scrollbar {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+  }
+  
+  /* Prevent text selection on buttons for better mobile UX */
+  button {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+  
+  /* QR Code responsive sizing */
+  canvas, svg {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Range slider styling */
+  .range-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 12px;
+    border-radius: 6px;
+    background: transparent;
+    border: 2px solid #2d2d2d;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+  }
+  
+  .dark .range-slider {
+    background: transparent;
+    border: 2px solid #e5e5e5;
+  }
+  
+  .range-slider:hover {
+    border-color: #1a1a1a;
+  }
+  
+  .dark .range-slider:hover {
+    border-color: #ffffff;
+  }
+  
+  /* Slider track */
+  .range-slider::-webkit-slider-track {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 12px;
+    border-radius: 6px;
+  }
+  
+  .range-slider::-moz-range-track {
+    height: 12px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+  }
+  
+  /* Slider thumb */
+  .range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: #2d2d2d;
+    border: 3px solid #f5f5f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .dark .range-slider::-webkit-slider-thumb {
+    background: #f5f5f0;
+    border: 3px solid #1a1a1a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+  
+  .range-slider::-moz-range-thumb {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: #2d2d2d;
+    border: 3px solid #f5f5f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .dark .range-slider::-moz-range-thumb {
+    background: #f5f5f0;
+    border: 3px solid #1a1a1a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Hover effects */
+  .range-slider::-webkit-slider-thumb:hover {
+    background: #1a1a1a;
+    transform: scale(1.15);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  .dark .range-slider::-webkit-slider-thumb:hover {
+    background: #ffffff;
+  }
+  
+  .range-slider::-moz-range-thumb:hover {
+    background: #1a1a1a;
+    transform: scale(1.15);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  .dark .range-slider::-moz-range-thumb:hover {
+    background: #ffffff;
   }
 }
